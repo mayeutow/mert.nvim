@@ -94,13 +94,53 @@ return {
 
   {
     'epwalsh/obsidian.nvim',
+    tag = '*', -- recommended, use latest release instead of latest commit
     lazy = true,
+    keys = {
+      { '<leader>on', '<cmd>ObsidianNew<cr>', desc = 'New Obsidian note', mode = 'n' },
+      { '<leader>oo', '<cmd>ObsidianSearch<cr>', desc = 'Search Obsidian notes', mode = 'n' },
+      { '<leader>os', '<cmd>ObsidianQuickSwitch<cr>', desc = 'Quick Switch', mode = 'n' },
+      { '<leader>ob', '<cmd>ObsidianBacklinks<cr>', desc = 'Show location list of backlinks', mode = 'n' },
+      { '<leader>ot', '<cmd>ObsidianTemplate<cr>', desc = 'Follow link under cursor', mode = 'n' },
+      { '<leader>op', '<cmd>ObsidianPasteImg<cr>', desc = 'Paste imate from clipboard under cursor', mode = 'n' },
+    },
     ft = 'markdown',
-    event = { 'BufReadPre path/to/your/vault/**.md' },
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
     config = function()
       require('obsidian').setup {
-        dir = 'C:/Users/mert/Desktop/notes', -- set your vault directory here
+        workspaces = {
+          {
+            name = 'personal',
+            path = '/Users/mert/Desktop/notes',
+          },
+          {
+            name = 'work',
+            path = '~/vaults/work',
+          },
+        },
       }
     end,
+  },
+  {
+    'kdheepak/lazygit.nvim',
+    lazy = true,
+    cmd = {
+      'LazyGit',
+      'LazyGitConfig',
+      'LazyGitCurrentFile',
+      'LazyGitFilter',
+      'LazyGitFilterCurrentFile',
+    },
+    -- optional for floating window border decoration
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    -- setting the keybinding for LazyGit with 'keys' is recommended in
+    -- order to load the plugin when the command is run for the first time
+    keys = {
+      { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
+    },
   },
 }
