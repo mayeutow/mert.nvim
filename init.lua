@@ -17,6 +17,24 @@ vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
 
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'go,c,cpp,typescript,ts',
+  callback = function()
+    vim.bo.tabstop = 4
+    vim.bo.shiftwidth = 4
+    vim.bo.expandtab = true
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'svelte,html',
+  callback = function()
+    vim.bo.tabstop = 2
+    vim.bo.shiftwidth = 2
+    vim.bo.expandtab = true
+  end,
+})
+
 -- Enable break indent
 vim.opt.breakindent = true
 
@@ -514,7 +532,8 @@ require('lazy').setup({
         lua = { 'stylua' },
         c = { 'clang-format' },
         go = { 'goimports' },
-        html = { 'prettierd' },
+        html = { 'prettier' },
+        svelte = { 'prettier' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -752,6 +771,7 @@ require('lazy').setup({
   },
 })
 require('catppuccin').setup {
+  transparent_background = false,
   integrations = {
     cmp = true,
     gitsigns = true,
@@ -761,77 +781,23 @@ require('catppuccin').setup {
     notify = false,
     mini = {
       enabled = true,
-      indentscope_color = '',
+      indentscope_color = 'mocha',
     },
   },
 }
 
 vim.cmd 'colorscheme catppuccin-mocha'
-
-local ctp_feline = require 'catppuccin.groups.integrations.feline'
-
-ctp_feline.setup()
-
-require('feline').setup {
-  components = ctp_feline.get(),
-}
-local harpoon = require 'harpoon'
-
--- REQUIRED
-harpoon:setup()
--- REQUIRED
-
-vim.keymap.set('n', '<leader>a', function()
-  harpoon:list():add()
-end)
-vim.keymap.set('n', '<C-e>', function()
-  harpoon.ui:toggle_quick_menu(harpoon:list())
-end)
-
-vim.keymap.set('n', '<C-h>', function()
-  harpoon:list():select(1)
-end)
-vim.keymap.set('n', '<C-t>', function()
-  harpoon:list():select(2)
-end)
-vim.keymap.set('n', '<C-n>', function()
-  harpoon:list():select(3)
-end)
-vim.keymap.set('n', '<C-s>', function()
-  harpoon:list():select(4)
-end)
-
--- Toggle previous & next buffers stored within Harpoon list
-vim.keymap.set('n', '<C-S-P>', function()
-  harpoon:list():prev()
-end)
-vim.keymap.set('n', '<C-S-N>', function()
-  harpoon:list():next()
-end)
-
-local conf = require('telescope.config').values
-local function toggle_telescope(harpoon_files)
-  local file_paths = {}
-  for _, item in ipairs(harpoon_files.items) do
-    table.insert(file_paths, item.value)
-  end
-
-  require('telescope.pickers')
-    .new({}, {
-      prompt_title = 'Harpoon',
-      finder = require('telescope.finders').new_table {
-        results = file_paths,
-      },
-      previewer = conf.file_previewer {},
-      sorter = conf.generic_sorter {},
-    })
-    :find()
-end
-
-vim.keymap.set('n', '<C-e>', function()
-  toggle_telescope(harpoon:list())
-end, { desc = 'Open harpoon window' })
-
+-- require('lspconfig').clangd.setup {
+--   cmd = { 'clangd', '--query-driver=C:/mingw64/bin/*' },
+-- }
 require('barbecue.ui').toggle(true)
+
+require('lualine').setup {
+  options = {
+    theme = 'auto',
+  },
+}
+
+-- require 'indent'
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

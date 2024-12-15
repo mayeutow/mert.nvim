@@ -1,6 +1,18 @@
 return {
   { 'nvim-tree/nvim-web-devicons' },
-
+  {
+    'neanias/everforest-nvim',
+    version = false,
+    lazy = false,
+    priority = 1000, -- make sure to load this before all the other start plugins
+    config = function()
+      require('everforest').setup {
+        background = 'hard',
+        transparent_background_level = 1,
+        italics = false,
+      }
+    end,
+  },
   {
     'windwp/nvim-ts-autotag',
     config = function()
@@ -70,13 +82,25 @@ return {
   },
 
   {
-    'freddiehaddad/feline.nvim',
-    opts = {},
-  },
-
-  {
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',
     dependencies = { 'nvim-lua/plenary.nvim' },
+  },
+
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+  },
+
+  {
+    'epwalsh/obsidian.nvim',
+    lazy = true,
+    ft = 'markdown',
+    event = { 'BufReadPre path/to/your/vault/**.md' },
+    config = function()
+      require('obsidian').setup {
+        dir = 'C:/Users/mert/Desktop/notes', -- set your vault directory here
+      }
+    end,
   },
 }
