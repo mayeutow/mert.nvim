@@ -8,7 +8,7 @@ return {
     config = function()
       require('everforest').setup {
         background = 'hard',
-        transparent_background_level = 1,
+        transparent_background_level = 0,
         italics = false,
       }
     end,
@@ -115,10 +115,6 @@ return {
             name = 'personal',
             path = '/Users/mert/Desktop/notes',
           },
-          {
-            name = 'work',
-            path = '~/vaults/work',
-          },
         },
       }
     end,
@@ -141,6 +137,26 @@ return {
     -- order to load the plugin when the command is run for the first time
     keys = {
       { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
+    },
+  },
+
+  -- Simple, minimal Lazy.nvim configuration
+  {
+    'huynle/ogpt.nvim',
+    event = 'VeryLazy',
+    opts = {
+      default_provider = 'ollama',
+      providers = {
+        ollama = {
+          api_host = os.getenv 'OLLAMA_API_HOST' or 'http://localhost:11434',
+          api_key = os.getenv 'OLLAMA_API_KEY' or '',
+        },
+      },
+    },
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
     },
   },
 }

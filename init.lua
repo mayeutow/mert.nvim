@@ -6,6 +6,7 @@ vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.g.have_nerd_font = true
 
+vim.opt.conceallevel = 1
 vim.opt.number = true
 vim.opt.relativenumber = true
 
