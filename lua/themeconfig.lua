@@ -1,5 +1,5 @@
 require('catppuccin').setup {
-  transparent_background = false,
+  transparent_background = true,
   integrations = {
     cmp = true,
     gitsigns = true,

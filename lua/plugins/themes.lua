@@ -16,5 +16,6 @@ return {
   {
     'folke/tokyonight.nvim',
   },
+
   { 'EdenEast/nightfox.nvim', priority = 1000, lazy = false },
 }
