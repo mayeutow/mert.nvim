@@ -1,5 +1,5 @@
 require('catppuccin').setup {
-  transparent_background = true,
+  transparent_background = false,
   integrations = {
     cmp = true,
     gitsigns = true,
@@ -18,8 +18,9 @@ require('catppuccin').setup {
 vim.cmd 'colorscheme catppuccin-mocha'
 require('barbecue.ui').toggle(true)
 
-require('lualine').setup {
-  options = {
-    theme = 'auto',
-  },
-}
+require 'plugins.feline'
+-- require('lualine').setup {
+--   options = {
+--     theme = 'auto',
+--   },
+-- }
