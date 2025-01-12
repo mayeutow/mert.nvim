@@ -121,6 +121,9 @@ require('lazy').setup({
   {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
+    config = function()
+      require('nvim-treesitter.install').compilers = { 'zig' }
+    end,
     main = 'nvim-treesitter.configs',
     opts = {
       ensure_installed = {
