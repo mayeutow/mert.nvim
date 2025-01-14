@@ -5,6 +5,8 @@ end)
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+
+-- i keep the default tabstop 4. fuck 8 spaces indenting on random shit
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4

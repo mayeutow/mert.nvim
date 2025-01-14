@@ -1,14 +1,11 @@
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system {
-    'git',
-    'clone',
-    '--filter=blob:none',
-    'https://github.com/folke/lazy.nvim.git',
-    '--branch=stable', -- latest stable release
-    lazypath,
-  }
-end
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
+  local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
+  if vim.v.shell_error ~= 0 then
+    error('Error cloning lazy.nvim:\n' .. out)
+  end
+end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
@@ -119,53 +116,17 @@ require('lazy').setup({
     end,
   },
   {
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    config = function()
-      require('nvim-treesitter.install').compilers = { 'zig' }
-    end,
-    main = 'nvim-treesitter.configs',
-    opts = {
-      ensure_installed = {
-        'bash',
-        'c',
-        'diff',
-        'html',
-        'lua',
-        'luadoc',
-        'markdown',
-        'markdown_inline',
-        'query',
-        'vim',
-        'vimdoc',
-        'javascript',
-        'typescript',
-        'go',
-      },
-      auto_install = true,
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
-    },
-    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-  },
-
-  {
     'nvim-treesitter/nvim-treesitter-context',
     dependencies = 'nvim-treesitter/nvim-treesitter',
     config = true,
   },
 
-  {
-    'freddiehaddad/feline.nvim',
-    opts = {},
-    config = function() end,
-  },
-
+  -- {
+  --   'freddiehaddad/feline.nvim',
+  --   opts = {},
+  --   config = function() end,
+  -- },
+  --
   { 'nvim-tree/nvim-web-devicons' },
 
   { 'kyazdani42/nvim-web-devicons' },
@@ -225,7 +186,44 @@ require('lazy').setup({
       'nvim-telescope/telescope.nvim',
     },
   },
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      require('lualine').setup {
+        options = { theme = 'auto', section_separators = '', component_separators = '' },
+      }
+    end,
+  },
 
+  require 'plugins.obsidian',
+  require 'plugins.debug',
+  require 'plugins.indent_line',
+  require 'plugins.lint',
+  require 'plugins.autopairs',
+  require 'plugins.neo-tree',
+  require 'plugins.snacks',
+  {
+    'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate',
+    lazy = false,
+    config = function()
+      require('nvim-treesitter.install').compilers = { 'zig' }
+    end,
+    main = 'nvim-treesitter.configs',
+    opts = {
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      auto_install = true,
+      highlight = {
+        enable = true,
+        additional_vim_regex_highlighting = { 'ruby' },
+      },
+      indent = { enable = true, disable = { 'ruby' } },
+    },
+    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
+    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+  },
   {
     'HiPhish/rainbow-delimiters.nvim',
     dependencies = 'nvim-treesitter/nvim-treesitter',
@@ -237,6 +235,7 @@ require('lazy').setup({
         },
         query = {
           [''] = 'rainbow-delimiters',
+          lua = 'rainbow-blocks',
         },
         highlight = {
           'RainbowDelimiterRed',
@@ -251,221 +250,6 @@ require('lazy').setup({
     end,
   },
 
-  {
-    'folke/snacks.nvim',
-    priority = 1000,
-    lazy = false,
-    ---@type snacks.Config
-    opts = {
-      keys = {
-        {
-          '<leader>z',
-          function()
-            Snacks.zen()
-          end,
-          desc = 'Toggle Zen Mode',
-        },
-        {
-          '<leader>Z',
-          function()
-            Snacks.zen.zoom()
-          end,
-          desc = 'Toggle Zoom',
-        },
-        {
-          '<leader>.',
-          function()
-            Snacks.scratch()
-          end,
-          desc = 'Toggle Scratch Buffer',
-        },
-        {
-          '<leader>S',
-          function()
-            Snacks.scratch.select()
-          end,
-          desc = 'Select Scratch Buffer',
-        },
-        {
-          '<leader>n',
-          function()
-            Snacks.notifier.show_history()
-          end,
-          desc = 'Notification History',
-        },
-        {
-          '<leader>bd',
-          function()
-            Snacks.bufdelete()
-          end,
-          desc = 'Delete Buffer',
-        },
-        {
-          '<leader>cR',
-          function()
-            Snacks.rename.rename_file()
-          end,
-          desc = 'Rename File',
-        },
-        {
-          '<leader>gB',
-          function()
-            Snacks.gitbrowse()
-          end,
-          desc = 'Git Browse',
-          mode = { 'n', 'v' },
-        },
-        {
-          '<leader>gb',
-          function()
-            Snacks.git.blame_line()
-          end,
-          desc = 'Git Blame Line',
-        },
-        {
-          '<leader>gf',
-          function()
-            Snacks.lazygit.log_file()
-          end,
-          desc = 'Lazygit Current File History',
-        },
-        {
-          '<leader>gg',
-          function()
-            Snacks.lazygit()
-          end,
-          desc = 'Lazygit',
-        },
-        {
-          '<leader>gl',
-          function()
-            Snacks.lazygit.log()
-          end,
-          desc = 'Lazygit Log (cwd)',
-        },
-        {
-          '<leader>un',
-          function()
-            Snacks.notifier.hide()
-          end,
-          desc = 'Dismiss All Notifications',
-        },
-        {
-          '<c-/>',
-          function()
-            Snacks.terminal()
-          end,
-          desc = 'Toggle Terminal',
-        },
-        {
-          '<c-_>',
-          function()
-            Snacks.terminal()
-          end,
-          desc = 'which_key_ignore',
-        },
-        {
-          ']]',
-          function()
-            Snacks.words.jump(vim.v.count1)
-          end,
-          desc = 'Next Reference',
-          mode = { 'n', 't' },
-        },
-        {
-          '[[',
-          function()
-            Snacks.words.jump(-vim.v.count1)
-          end,
-          desc = 'Prev Reference',
-          mode = { 'n', 't' },
-        },
-        {
-          '<leader>N',
-          desc = 'Neovim News',
-          function()
-            Snacks.win {
-              file = vim.api.nvim_get_runtime_file('doc/news.txt', false)[1],
-              width = 0.6,
-              height = 0.6,
-              wo = {
-                spell = false,
-                wrap = false,
-                signcolumn = 'yes',
-                statuscolumn = ' ',
-                conceallevel = 3,
-              },
-            }
-          end,
-        },
-      },
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-      bigfile = { enabled = true },
-      dashboard = { enabled = true },
-      indent = { enabled = false },
-      input = { enabled = true },
-      notifier = { enabled = true },
-      quickfile = { enabled = true },
-      terminal = { enabled = true },
-      scroll = {
-        enabled = true,
-        animate = {
-          duration = { step = 15, total = 100 },
-          easing = 'linear',
-        },
-      },
-      statuscolumn = { enabled = true },
-      words = { enabled = true },
-    },
-  },
-  {
-    'folke/trouble.nvim',
-    opts = {
-      scroll = {},
-    }, -- for default options, refer to the configuration section for custom setup.
-    cmd = 'Trouble',
-    keys = {
-      {
-        '<leader>xx',
-        '<cmd>Trouble diagnostics toggle<cr>',
-        desc = 'Diagnostics (Trouble)',
-      },
-      {
-        '<leader>xX',
-        '<cmd>Trouble diagnostics toggle filter.buf=0<cr>',
-        desc = 'Buffer Diagnostics (Trouble)',
-      },
-      {
-        '<leader>cs',
-        '<cmd>Trouble symbols toggle focus=false<cr>',
-        desc = 'Symbols (Trouble)',
-      },
-      {
-        '<leader>cl',
-        '<cmd>Trouble lsp toggle focus=false win.position=right<cr>',
-        desc = 'LSP Definitions / references / ... (Trouble)',
-      },
-      {
-        '<leader>xL',
-        '<cmd>Trouble loclist toggle<cr>',
-        desc = 'Location List (Trouble)',
-      },
-      {
-        '<leader>xQ',
-        '<cmd>Trouble qflist toggle<cr>',
-        desc = 'Quickfix List (Trouble)',
-      },
-    },
-  },
-
-  require 'plugins.obsidian',
-  require 'plugins.debug',
-  require 'plugins.indent_line',
-  require 'plugins.lint',
-  require 'plugins.autopairs',
-  require 'plugins.neo-tree',
   require 'plugins.gitsigns',
 }, {
   ui = {

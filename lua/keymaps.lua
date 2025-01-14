@@ -1,10 +1,11 @@
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+vim.keymap.set('n', '<leader>ts', ':split | resize 10 | terminal<CR>', { noremap = true, silent = true, desc = '[T]erminal [S]plitwindow' })
 vim.keymap.set('n', '<leader>cs', ':Telescope colorscheme<CR>', { silent = true, desc = '[C]olor[s]cheme', noremap = true })
 vim.keymap.set(
   'n',
   '<leader>ht',
   'i<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Document</title>\n</head>\n<body>\n\n</body>\n</html><Esc>',
-  { noremap = true, silent = true, desc = 'HTML snippet' }
+  { noremap = true, silent = true, desc = '[H][T]ML snippet' }
 )
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })

@@ -7,11 +7,7 @@ return {
 
   { 'rebelot/kanagawa.nvim', as = 'kanagawa' },
 
-  { 'rose-pine/neovim', as = 'rose-pine' },
-
-  { 'navarasu/onedark.nvim', as = 'navarasu' },
-
-  { 'tiagovla/tokyodark.nvim', as = 'tokyodark' },
+  { 'rose-pine/neovim', as = 'rose-pine', lazy = false, priority = 1000 },
 
   {
     'folke/tokyonight.nvim',

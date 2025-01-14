@@ -13,6 +13,8 @@ vim.api.nvim_create_user_command('DebugIndent', function()
   )
 end, {})
 
+-- is this how people manage their preferences for indentation spaces?
+-- i keep the default tabstop 4. fuck 8 spaces indenting on random shit
 vim.api.nvim_create_augroup('FileTypeIndentation', { clear = true })
 
 vim.api.nvim_create_autocmd('FileType', {
