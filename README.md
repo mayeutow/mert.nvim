@@ -1,9 +1,65 @@
-# kickstart.nvim
+# kickstart.nvim (Neovim 0.12)
+
+This branch is the **Neovim 0.12+** version of this config. `master` keeps the
+older, pre-0.12 version.
+
+Requires **Neovim >= 0.12.0** (`:checkhealth kickstart.nvim` will tell you if
+your Neovim is too old).
+
+### What changed for 0.12
+
+- **LSP** — servers are registered with `vim.lsp.config()` and started with
+  `vim.lsp.enable()` (see `lua/plugins/lsp.lua`). The legacy
+  `require('lspconfig')[name].setup()` framework is deprecated and is being
+  removed from `nvim-lspconfig`; `nvim-lspconfig` is still installed because it
+  now only ships the per-server defaults that `vim.lsp.config()` picks up from
+  its `lsp/` directory. `mason-lspconfig` 2.x no longer has a `handlers` table —
+  servers installed through Mason are enabled with `automatic_enable`
+  (`vim.lsp.enable()`).
+- **Capabilities** — the `nvim-cmp` capabilities are declared once for every
+  server with the special `vim.lsp.config('*', { ... })` config.
+- **Diagnostics** — the sign column glyphs are configured with
+  `vim.diagnostic.config { signs = { ... } }`. Setting `DiagnosticSign*`
+  highlights with `vim.fn.sign_define()` no longer has any effect in 0.12.
+- **Tree-sitter** — `nvim-treesitter` is on its `main` branch (`master` is
+  frozen for 0.11). `nvim-treesitter.configs`, `:TSEnable` and the
+  `highlight`/`indent` options are gone: parsers are installed with
+  `require('nvim-treesitter').install()` and highlighting/indentation are
+  switched on per buffer with `vim.treesitter.start()` from a `FileType`
+  autocommand, see `lua/plugins/treesitter.lua`.
+- `vim.highlight.on_yank()` → `vim.hl.on_yank()`.
+- `client.supports_method()` → `client:supports_method()`.
+- `gitsigns.toggle_deleted()` → `gitsigns.preview_hunk_inline()`.
+- `unpack()` → `vim.list_extend()` in the DAP keymaps.
+- Dropped the archived `kyazdani42/nvim-web-devicons` duplicate spec, and
+  `telescope.nvim` no longer pins the frozen `0.1.x` branch.
+
+### Upgrading from the previous config
+
+Run `:Lazy update` after the first start, so `nvim-treesitter` moves to the
+`main` branch and `telescope.nvim` leaves `0.1.x` (their pins were dropped from
+`lazy-lock.json`). `:TSUpdate` is wired up as a build step, so parsers follow
+along on the next update.
+
+### Known leftovers
+
+- `lua/plugins/feline.lua` is not loaded anywhere (it is not in the lazy.nvim
+  spec), and feline.nvim itself is unmaintained; kept as-is.
+- `barbecue.nvim` is archived and still works, but it calls the long-deprecated
+  `nvim_get_hl_by_name()`, so expect a deprecation warning — `:checkhealth
+  vim.deprecated` lists it. Swap it for `nvim-navic` + a `winbar` (or
+  `Bekaboo/dropbar.nvim`) if the warning bothers you.
+- `nvim-cmp` still works on 0.12; Neovim's built-in completion
+  (`vim.lsp.completion` / the new `'autocomplete'` option) is an alternative but
+  was not adopted here.
 
 ### Install External Dependencies
 
 External Requirements:
-- Basic utils: `git`, `make`, `unzip`, C Compiler (`gcc`)
+- Basic utils: `git`, `make`, `unzip`, `curl`, `tar`, C Compiler (`gcc`)
+- [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter/blob/master/crates/cli/README.md)
+  >= 0.26.1, from your package manager (not npm) — needed by `nvim-treesitter`'s
+  `main` branch to build parsers
 - [ripgrep](https://github.com/BurntSushi/ripgrep#installation)
 - Clipboard tool (xclip/xsel/win32yank or other depending on platform)
 - A [Nerd Font](https://www.nerdfonts.com/): optional, provides various icons

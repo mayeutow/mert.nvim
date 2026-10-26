@@ -5,6 +5,6 @@ require 'indents'
 require 'themeconfig'
 require 'plugins.health'
 
--- for some reason this just doesn't work on its own even though it's enabled
-vim.cmd 'TSEnable highlight'
+-- Tree-sitter highlighting is switched on per buffer in `lua/plugins/treesitter.lua`
+-- (`:TSEnable` does not exist anymore on the nvim-treesitter `main` branch).
 -- vim: ts=2 sts=2 sw=2 et

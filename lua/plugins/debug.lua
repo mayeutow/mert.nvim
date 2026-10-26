@@ -27,7 +27,7 @@ return {
   keys = function(_, keys)
     local dap = require 'dap'
     local dapui = require 'dapui'
-    return {
+    local maps = {
       -- Basic debugging keymaps, feel free to change to your liking!
       { '<F5>', dap.continue, desc = 'Debug: Start/Continue' },
       { '<F1>', dap.step_into, desc = 'Debug: Step Into' },
@@ -43,8 +43,9 @@ return {
       },
       -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
       { '<F7>', dapui.toggle, desc = 'Debug: See last session result.' },
-      unpack(keys),
     }
+    -- `unpack()` is a Lua 5.1-ism, use vim.list_extend to keep lazy.nvim's own keys
+    return vim.list_extend(maps, keys)
   end,
   config = function()
     local dap = require 'dap'
