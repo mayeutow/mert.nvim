@@ -1,5 +1,5 @@
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
   local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
   if vim.v.shell_error ~= 0 then
@@ -129,8 +129,6 @@ require('lazy').setup({
   --
   { 'nvim-tree/nvim-web-devicons' },
 
-  { 'kyazdani42/nvim-web-devicons' },
-
   { 'SmiteshP/nvim-navic' },
 
   {
@@ -199,57 +197,11 @@ require('lazy').setup({
   require 'plugins.obsidian',
   require 'plugins.debug',
   require 'plugins.indent_line',
+  require 'plugins.treesitter',
   require 'plugins.lint',
   require 'plugins.autopairs',
   require 'plugins.neo-tree',
   require 'plugins.snacks',
-  {
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    lazy = false,
-    config = function()
-      require('nvim-treesitter.install').compilers = { 'zig' }
-    end,
-    main = 'nvim-treesitter.configs',
-    opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-      auto_install = true,
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
-    },
-    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-  },
-  {
-    'HiPhish/rainbow-delimiters.nvim',
-    dependencies = 'nvim-treesitter/nvim-treesitter',
-    config = function()
-      local rainbow_delimiters = require 'rainbow-delimiters'
-      vim.g.rainbow_delimiters = {
-        strategy = {
-          [''] = rainbow_delimiters.strategy.global,
-        },
-        query = {
-          [''] = 'rainbow-delimiters',
-          lua = 'rainbow-blocks',
-        },
-        highlight = {
-          'RainbowDelimiterRed',
-          'RainbowDelimiterYellow',
-          'RainbowDelimiterBlue',
-          'RainbowDelimiterOrange',
-          'RainbowDelimiterGreen',
-          'RainbowDelimiterViolet',
-          'RainbowDelimiterCyan',
-        },
-      }
-    end,
-  },
-
   require 'plugins.gitsigns',
 }, {
   ui = {
